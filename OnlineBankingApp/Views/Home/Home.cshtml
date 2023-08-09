@@ -1,0 +1,142 @@
+﻿@using Microsoft.AspNetCore.Http
+@inject IHttpContextAccessor HttpContextAccessor
+
+@{
+    ViewData["Title"] = "Home Page";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    string customerId = HttpContextAccessor.HttpContext.Session.GetString("CustomerId");
+    string Role = HttpContextAccessor.HttpContext.Session.GetString("Role");
+    var balance = ViewBag.Balance;
+    var AccountNumber = ViewBag.AccountNumber;
+
+}
+
+
+    <div class="container mt-5">
+    @if (Role == "Customer")
+    {
+        <div class="text-center">
+            <p>Account Number: @AccountNumber</p>
+        </div>
+        <div class="row justify-content-center">
+            <div class="col-sm-12 col-md-12 col-lg-4 text-center">
+                <h3>Account Balance: $ @balance</h3>
+            </div>
+        </div>
+    }
+
+ 
+    <div class="row justify-content-center mt-5">
+        <div class="col-sm-12 col-md-12 col-lg-4">
+            @if (Role == "Customer") { 
+            <div class="row">
+                <div class="col-sm-12">
+                        <a asp-area="" asp-controller="Home" asp-action="Deposit" class="btn btn-primary btn-block mb-2">Deposit History</a>
+                </div>
+                </div>
+            }
+            @if (Role == "Teller")
+            {
+                <div class="row">
+                    <div class="col-sm-12">
+                        <a asp-area="" asp-controller="Home" asp-action="Deposit" class="btn btn-primary btn-block mb-2">Deposit</a>
+                    </div>
+                </div>
+            }
+            @if (Role == "Customer") {
+            <div class="row">
+                <div class="col-sm-12">
+                    <a asp-area="" asp-controller="Home" asp-action="Withdrawal" class="btn btn-primary btn-block mb-2">Withdraw History</a>
+                </div>
+            </div>
+             }
+            @if (Role == "Teller")
+            {
+                <div class="row">
+                    <div class="col-sm-12">
+                        <a asp-area="" asp-controller="Home" asp-action="Withdrawal" class="btn btn-primary btn-block mb-2">Withdraw</a>
+                    </div>
+                </div>
+            }
+            @if (Role == "Customer")
+            {
+                <div class="row">
+                    <div class="col-sm-12">
+                    <a asp-area="" asp-controller="Home" asp-action="PayBill" class="btn btn-primary btn-block mb-2">Pay Bills</a>
+                </div>
+            </div>
+            }
+        </div>
+    </div>
+    @if (Role == "Customer") {
+    <div class="row justify-content-center mt-5">
+        <div class="col-sm-12 col-md-12 col-lg-8">
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>Description</th>
+                        <th>Amount</th>
+                        <th>Date</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var payment in ViewBag.combinedList)
+                    {
+                        <tr>
+                            @foreach (var cell in (object[])payment)
+            {
+                <td>@cell</td>
+            }
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+        </div>
+    }
+    else
+    {
+        <div class="row justify-content-center">
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Customer Name</th>
+                    <th>Tax File Number</th>
+                    <th>Address</th>
+                    <th>City</th>
+                    <th>State</th>
+                    <th>Postal Code</th>
+                    <th>Phone</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var customer in ViewBag.Customers)
+                {
+                    <tr>
+                        <td>@customer.CustomerName</td>
+                        <td>@customer.Tfn</td>
+                        <td>@customer.Address</td>
+                        <td>@customer.City</td>
+                        <td>@customer.State</td>
+                        <td>@customer.PostCode</td>
+                        <td>@customer.Phone</td>
+                        <td>
+                                @if (customer.Status == true)
+                                {
+                                    <a asp-controller="Home" asp-action="Closed" asp-route-id="@customer.CustomerId"style="color: red;">Close Account</a>
+                                    }
+                                else
+                                {
+                                    <a asp-controller="Home" asp-action="Closed" asp-route-id="@customer.CustomerId" style="color: green;">Reopen Account</a>
+                                    }
+                                <a asp-controller="Home" asp-action="Delete" asp-route-id="@customer.CustomerId" style="color: yellow;">Delete</a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+       </div> 
+    }
+</div>
+

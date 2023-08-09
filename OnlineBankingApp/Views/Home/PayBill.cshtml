@@ -1,0 +1,65 @@
+﻿@model OnlineBankingApp.Models.PaymentHistory
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+<div class="row justify-content-left">
+    <div class="col-12">
+        <button class="btn btn-primary" onclick="location.href='@Url.Action("UpdatePayees", "Home")'">Update Payees</button>
+    </div>
+</div>
+<div class="text-center">
+    <h2>Pay a Bill</h2>
+</div>
+
+<div class="row">
+    <div class="col-md-6 offset-md-3">
+        <form asp-action="Pay">
+            <div class="form-group">
+                <label asp-for="PayeeId">Payee(s):</label>
+                @Html.DropDownListFor(model => model.PayeeId, ViewBag.Payees as SelectList, new { @class = "form-control", multiple = "multiple" })
+            </div>
+
+            <div class="form-group">
+                <label asp-for="Amount">Amount:</label>
+                <input asp-for="Amount" class="form-control" />
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Pay" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<h3>Payment History</h3>
+
+@if (ViewBag.PaymentHistory == null)
+{
+    <p>No payment history found for this customer.</p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Payee Name</th>
+                <th>Amount</th>
+                <th>Payment Date</th>
+            </tr>
+        </thead>
+        <tbody>
+
+            @foreach (var payment in ViewBag.PaymentHistory)
+            {
+                <tr>
+                    <td>@payment.Payee.PayeeName</td>
+                    <td>@payment.Amount</td>
+                    <td>@payment.PaymentDate</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+

@@ -1,0 +1,90 @@
+﻿@model OnlineBankingApp.Models.Account
+@using Microsoft.AspNetCore.Http
+@inject IHttpContextAccessor HttpContextAccessor
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    string Role = HttpContextAccessor.HttpContext.Session.GetString("Role");
+}
+@if (Role == "Teller"){
+<div class="text-center">
+    <h2>Withdraw Funds</h2>
+</div>
+
+<div class="row">
+    <div class="col-md-6" justify-content-center">
+        <form asp-action="UpdateWithdrawal">
+            <div class="form-group">
+                    <label asp-for="CustomerId">Payee(s):</label>
+                    @Html.DropDownListFor(model => model.CustomerId, ViewBag.Customers as SelectList, new { @class = "form-control" })
+                </div>
+            <div class="form-group">
+                <label asp-for="Balance">Amount to Withdraw:</label>
+                <input asp-for="Balance" class="form-control" />
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Withdraw" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+}
+<h3>Withdrawal History</h3>
+@if (Role == "Customer"){
+@if (ViewBag.Withdrawal == null)
+{
+    <p>No Withdrawal history found.</p>
+}
+else
+{
+<table class="table">
+    <thead>
+        <tr>
+            <th>Date</th>
+            <th>Amount</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var payment in ViewBag.Withdrawal)
+        {
+                @payment
+            <tr>
+                <td>@payment.Amount</td>
+                <td>@payment.ActivityDate</td>
+            </tr>
+        }
+    </tbody>
+</table>
+}
+}
+
+@if (Role == "Teller")
+{
+    @if (ViewBag.Acti == null)
+    {
+        <p>No Teller Withdrawal history found.</p>
+    }
+    else
+    {
+        <div class="row justify-content-center">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Customer Name</th>
+                        <th>Amount</th>
+                        <th>Date</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var activity in ViewBag.Acti)
+                    {
+                        <tr>
+                            <td>@activity.Account.Customer.CustomerName</td>
+                            <td>@activity.Amount</td>
+                            <td>@activity.ActivityDate</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+            </div>
+    }
+}

@@ -1,0 +1,77 @@
+﻿@model OnlineBankingApp.Models.Customer
+
+@{
+    ViewData["Title"] = "Customer Details";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var CustomerName = ViewBag.customerName;
+    var Tfn = ViewBag.tfn;
+    var Address = ViewBag.address;
+    var City = ViewBag.city;
+    var State = ViewBag.state;
+    var PostCode = ViewBag.postcode;
+    var Phone = ViewBag.phone;
+}
+
+<h2>@ViewData["Title"]</h2>
+<form id="edit-customer-form" method="post">
+    @Html.AntiForgeryToken()
+    <div class="form-group">
+        <label asp-for="CustomerName"></label>
+        <input asp-for="CustomerName" class="form-control" placeholder="@CustomerName" />
+        <span asp-validation-for="CustomerName" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="Tfn"></label>
+        <input asp-for="Tfn" class="form-control" placeholder="@Tfn" />
+        <span asp-validation-for="Tfn" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="Address"></label>
+        <input asp-for="Address" class="form-control" placeholder="@Address" />
+        <span asp-validation-for="Address" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="City"></label>
+        <input asp-for="City" class="form-control" placeholder="@City" />
+        <span asp-validation-for="City" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="State"></label>
+        <input asp-for="State" class="form-control" placeholder="@State" />
+        <span asp-validation-for="State" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="PostCode"></label>
+        <input asp-for="PostCode" class="form-control" placeholder="@PostCode" />
+        <span asp-validation-for="PostCode" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="Phone"></label>
+        <input asp-for="Phone" class="form-control" placeholder="@Phone" />
+        <span asp-validation-for="Phone" class="text-danger"></span>
+    </div>
+    <button type="submit" id="update-customer-btn" class="btn btn-primary">Update Customer</button>
+    <button type="button" id="cancel-btn" class="btn btn-secondary">Cancel</button>
+</form>
+@section scripts {
+<script>
+$(function () {
+$('#cancel-btn').click(function () {
+window.history.back();
+});
+        $('#edit-customer-form').submit(function (event) {
+            event.preventDefault();
+
+            var form = $(this);
+            var formData = form.serialize();
+            var url = '@Url.Action("UpdateCustomer")';
+
+            $.ajax({
+                type: 'POST',
+                url: url,
+                data: formData
+            });
+        });
+    });
+</script>
+}
